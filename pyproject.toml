@@ -3,13 +3,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "project-cognitive-layer"
+name = "project-cortex"
 version = "0.1.0"
-description = "A local-first, model-agnostic project cognitive layer for long-term AI participation."
+description = "A project-owned cognitive layer for long-term AI collaboration."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
-authors = [{name = "Project Cognitive Layer contributors"}]
+authors = [{name = "Project Cortex contributors"}]
 dependencies = []
 
 [project.scripts]
