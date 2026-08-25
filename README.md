@@ -1,26 +1,18 @@
-# Project Cognitive Layer (MVP)
+# Project Cortex
 
-> Design projects from day one for long-term AI participation.
+> **A project-owned cognitive layer for long-term AI collaboration.**
 
-This repository is a first working prototype of an **AI-native project cognitive layer**: a project-owned, model-agnostic foundation that gives coding agents a stable way to understand a repository, retrieve task-relevant context, track current state, and propose knowledge updates after code changes.
+Project Cortex is an **AI-native project cognition infrastructure** designed around one principle:
 
-The core idea is simple:
+**Projects should be designed from day one for long-term AI participation.**
 
-**Project knowledge should belong to the project, not to Claude, Codex, Cursor, Gemini, or any single agent session.**
+Instead of making every coding agent repeatedly rediscover architecture, constraints, decisions, current state, and prior work, Project Cortex gives the repository its own durable, model-agnostic cognitive layer.
 
-AI tools are replaceable clients. The project should retain its own architecture knowledge, constraints, decisions, state, history, and working conventions across models and sessions.
+The project — not Claude, Codex, Cursor, Gemini, or any individual agent session — owns the knowledge.
 
-## MVP scope
+AI tools become replaceable clients of that shared project cognition.
 
-The first version intentionally implements only three capabilities:
-
-1. `aiproj init` — inspect a repository and create a `.ai/` cognitive layer.
-2. `aiproj context "<task>"` — compile a compact task-relevant context from project knowledge and repository files.
-3. `aiproj update` — inspect the current Git diff and produce a **knowledge delta proposal** plus a state update, instead of silently treating agent inference as truth.
-
-The MVP is deterministic and local-first. It does not require an LLM, embedding service, MCP server, cloud database, or vendor-specific API.
-
-## Why this exists
+## What Project Cortex is trying to become
 
 Most coding-agent workflows repeatedly do this:
 
@@ -33,10 +25,12 @@ request
   -> next session starts from scratch
 ```
 
-The intended long-term workflow is:
+Project Cortex aims for a different engineering model:
 
 ```text
 User Intent
+    ↓
+Project Cognition
     ↓
 Context Compilation
     ↓
@@ -46,15 +40,40 @@ Execution
     ↓
 Verification
     ↓
-Diff Analysis
+State Transition
     ↓
-Knowledge Delta Proposal
-    ↓
-Project State / Knowledge Update
+Knowledge Update
     ↺
 ```
 
-The project itself becomes the durable source of cognition.
+The repository itself becomes the durable source of cognition.
+
+Conceptually:
+
+```text
+Claude ─┐
+Codex ──┼──> Project Cortex
+Cursor ─┤          │
+Gemini ─┘          ├── project identity
+                   ├── architecture
+                   ├── constraints
+                   ├── decisions
+                   ├── current state
+                   ├── memory/history
+                   ├── workflows
+                   ├── evidence/provenance
+                   └── tools
+```
+
+## MVP scope
+
+The first version intentionally implements only three capabilities:
+
+1. `aiproj init` — inspect a repository and create a `.ai/` cognitive layer.
+2. `aiproj context "<task>"` — compile compact, task-relevant context from project knowledge and repository files.
+3. `aiproj update` — inspect the current Git diff and produce a **knowledge delta proposal** plus a state update instead of silently treating agent inference as project truth.
+
+The MVP is deterministic and local-first. It does not require an LLM, embedding service, MCP server, cloud database, or vendor-specific API.
 
 ## Quick start
 
@@ -99,11 +118,15 @@ The update command reads `git diff`, identifies affected files and likely archit
 
 ## Design principles
 
-### 1. Memory is not context
+### 1. Project cognition belongs to the project
 
-The project may eventually contain a large knowledge base. An agent context window should contain only the subset relevant to the task. This MVP therefore treats **context compilation** as a separate concern from storage.
+Project knowledge must survive changes in models, IDEs, agents, and vendors. Claude, Codex, Cursor, Gemini, and future agents should consume the same project-owned cognitive source instead of maintaining isolated hidden memories.
 
-### 2. State is not history
+### 2. Memory is not context
+
+The project may eventually contain a large knowledge base. An agent context window should contain only the subset relevant to the current task. Project Cortex therefore treats **context compilation** as a separate concern from knowledge storage.
+
+### 3. State is not history
 
 `state.md` answers: **what state is the project in now?**
 
@@ -111,7 +134,7 @@ Project history and learned knowledge answer: **what do we know and what happene
 
 These are intentionally separate concepts.
 
-### 3. Inference is not fact
+### 4. Inference is not fact
 
 A coding agent may infer that a changed file represents an architectural decision. That inference should not silently become canonical knowledge. The MVP emits a **knowledge delta proposal** for review.
 
@@ -121,7 +144,7 @@ A mature implementation should distinguish at least:
 - `accepted` — explicitly adopted by a human/team/authorized workflow;
 - `inferred` — agent-generated hypothesis.
 
-### 4. Knowledge needs provenance
+### 5. Knowledge needs provenance
 
 Long-term project knowledge should eventually carry metadata such as:
 
@@ -138,7 +161,7 @@ status
 
 This is necessary to prevent stale or hallucinated memories from becoming permanent project facts.
 
-### 5. Humans retain cognitive sovereignty
+### 6. Humans retain cognitive sovereignty
 
 Canonical project knowledge should not become an unreviewed accumulation of agent summaries. A useful hierarchy is:
 
@@ -208,28 +231,11 @@ tests/
 └── test_init.py
 ```
 
-## Intended final system
+## Long-term target
 
-The long-term target is not merely an “AI memory plugin.” It is a **Project Cognitive Infrastructure** layer that remains valid even if the team switches models, IDEs, coding agents, or vendors.
+Project Cortex is not intended to become merely an “AI memory plugin.” The intended destination is a **Project Cognitive Infrastructure** layer that remains valid even when the team switches models, IDEs, coding agents, or vendors.
 
-Conceptually:
-
-```text
-Claude ─┐
-Codex ──┼──> Project Cognitive Layer
-Cursor ─┤          │
-Gemini ─┘          ├── project identity
-                   ├── architecture
-                   ├── constraints
-                   ├── decisions
-                   ├── current state
-                   ├── memory/history
-                   ├── workflows
-                   ├── evidence/provenance
-                   └── tools
-```
-
-The project cognitive layer should support a closed engineering loop:
+The cognitive layer should eventually support a closed engineering loop:
 
 ```text
 Intent
